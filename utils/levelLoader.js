@@ -13,8 +13,13 @@ const createBrickRow = (rowConfig) => {
   const brickHeight = BRICK_DEFAULTS.height;
   const gap = BRICK_DEFAULTS.gap;
   
-  const totalWidth = count * brickWidth + (count - 1) * gap;
-  const startX = (width - totalWidth) / 2 + brickWidth / 2;
+  let startX;
+  if (rowConfig.x !== undefined) {
+    startX = rowConfig.x * width;
+  } else {
+    const totalWidth = count * brickWidth + (count - 1) * gap;
+    startX = (width - totalWidth) / 2 + brickWidth / 2;
+  }
   
   const bricks = [];
   for (let i = 0; i < count; i++) {
@@ -35,6 +40,7 @@ const processLevelData = (levelData) => {
   const processed = {
     background: levelData.background,
     bricks: [],
+    stock: levelData.stock || 20,
   };
   
   if (levelData.bricks && levelData.bricks.rows) {

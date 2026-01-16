@@ -25,6 +25,10 @@ export class PhysicsEngine {
     this.brickIdCounter = 0;
     
     this.score = 0;
+    this.explosions = [];
+    this.explosionIdCounter = 0;
+    this.bricksDestroyed = 0;
+    this.totalBricks = 0;
     
     this.lastShootTime = 0;
     this.shootInterval = 100;
@@ -36,6 +40,8 @@ export class PhysicsEngine {
   }
 
   setupCollisionHandler() {
+    this.processedCollisions = new Set();
+    
     Matter.Events.on(this.engine, 'collisionStart', (event) => {
       event.pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
@@ -52,10 +58,24 @@ export class PhysicsEngine {
         }
         
         if (brick && ball) {
+          const collisionKey = `${ball.ballId}-${brick.brickId}`;
+          if (this.processedCollisions.has(collisionKey)) return;
+          this.processedCollisions.add(collisionKey);
+          
+          setTimeout(() => this.processedCollisions.delete(collisionKey), 100);
+          
+          const previousHealth = brick.brickHealth;
           brick.brickHealth--;
           
           if (brick.brickHealth <= 0) {
             this.score += BRICK_POINTS.destroy;
+            this.bricksDestroyed++;
+            this.explosions.push({
+              id: this.explosionIdCounter++,
+              x: brick.position.x,
+              y: brick.position.y,
+              health: previousHealth,
+            });
             Matter.Composite.remove(this.world, brick);
             this.bricks = this.bricks.filter(b => b !== brick);
           } else {
@@ -89,10 +109,13 @@ export class PhysicsEngine {
   loadLevel(levelConfig) {
     this.clearBricks();
     this.score = 0;
+    this.bricksDestroyed = 0;
+    this.totalBricks = 0;
     
     if (levelConfig.bricks) {
       levelConfig.bricks.forEach(brickData => {
         this.addBrick(brickData);
+        this.totalBricks++;
       });
     }
   }
@@ -180,38 +203,45 @@ export class PhysicsEngine {
   }
 
   cleanupBalls() {
-    const ballsToRemove = this.balls.filter(ball => {
-      return ball.position.y > height + 100 || 
-             ball.position.y < -100 ||
-             ball.position.x < -100 || 
-             ball.position.x > width + 100;
-    });
-
-    ballsToRemove.forEach(ball => {
-      Matter.Composite.remove(this.world, ball);
-    });
-
-    this.balls = this.balls.filter(ball => !ballsToRemove.includes(ball));
+    for (let i = this.balls.length - 1; i >= 0; i--) {
+      const ball = this.balls[i];
+      if (ball.position.y > height + 100 || 
+          ball.position.y < -100 ||
+          ball.position.x < -100 || 
+          ball.position.x > width + 100) {
+        Matter.Composite.remove(this.world, ball);
+        this.balls.splice(i, 1);
+      }
+    }
   }
 
   getBallsState() {
-    return this.balls.map(ball => ({
-      id: ball.ballId,
-      x: ball.position.x,
-      y: ball.position.y,
-      radius: ball.circleRadius,
-    }));
+    const result = new Array(this.balls.length);
+    for (let i = 0; i < this.balls.length; i++) {
+      const ball = this.balls[i];
+      result[i] = {
+        id: ball.ballId,
+        x: Math.round(ball.position.x),
+        y: Math.round(ball.position.y),
+      };
+    }
+    return result;
   }
 
   getBricksState() {
-    return this.bricks.map(brick => ({
-      id: brick.brickId,
-      x: brick.position.x,
-      y: brick.position.y,
-      width: brick.bounds.max.x - brick.bounds.min.x,
-      height: brick.bounds.max.y - brick.bounds.min.y,
-      health: brick.brickHealth,
-    }));
+    const result = new Array(this.bricks.length);
+    for (let i = 0; i < this.bricks.length; i++) {
+      const brick = this.bricks[i];
+      result[i] = {
+        id: brick.brickId,
+        x: brick.position.x,
+        y: brick.position.y,
+        width: brick.bounds.max.x - brick.bounds.min.x,
+        height: brick.bounds.max.y - brick.bounds.min.y,
+        health: brick.brickHealth,
+      };
+    }
+    return result;
   }
 
   getScore() {
@@ -223,11 +253,20 @@ export class PhysicsEngine {
     return () => this.listeners.delete(listener);
   }
 
+  getExplosions() {
+    const explosions = [...this.explosions];
+    this.explosions = [];
+    return explosions;
+  }
+
   notifyListeners() {
     const state = {
       balls: this.getBallsState(),
       bricks: this.getBricksState(),
       score: this.score,
+      explosions: this.getExplosions(),
+      bricksDestroyed: this.bricksDestroyed,
+      totalBricks: this.totalBricks,
     };
     this.listeners.forEach(listener => listener(state));
   }

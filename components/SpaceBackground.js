@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Defs, RadialGradient, Stop, Rect, Circle } from 'react-native-svg';
+import Svg, { Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,7 +28,7 @@ const generateStars = (config) => {
   return stars;
 };
 
-const Star = ({ star }) => {
+const Star = memo(({ star }) => {
   return (
     <View
       style={[
@@ -65,9 +65,9 @@ const Star = ({ star }) => {
       />
     </View>
   );
-};
+});
 
-const NebulaClouds = ({ clouds }) => {
+const NebulaClouds = memo(({ clouds }) => {
   return (
     <Svg style={StyleSheet.absoluteFill} width={width} height={height}>
       <Defs>
@@ -102,9 +102,9 @@ const NebulaClouds = ({ clouds }) => {
       })}
     </Svg>
   );
-};
+});
 
-export const SpaceBackground = ({ config }) => {
+export const SpaceBackground = memo(({ config }) => {
   const stars = useMemo(() => generateStars(config.stars), [config.stars]);
 
   return (
@@ -120,7 +120,7 @@ export const SpaceBackground = ({ config }) => {
       ))}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

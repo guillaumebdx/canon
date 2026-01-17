@@ -6,6 +6,7 @@ import { getLevelCount } from './utils/levelLoader';
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('menu');
   const [selectedLevel, setSelectedLevel] = useState(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   const handleStartLevel = (level) => {
     setSelectedLevel(level);
@@ -26,8 +27,8 @@ export default function App() {
   };
 
   if (currentScreen === 'menu') {
-    return <MenuScreen onStartLevel={handleStartLevel} />;
+    return <MenuScreen onStartLevel={handleStartLevel} soundEnabled={soundEnabled} setSoundEnabled={setSoundEnabled} />;
   }
 
-  return <GameScreen level={selectedLevel} onBackToMenu={handleBackToMenu} onNextLevel={handleNextLevel} />;
+  return <GameScreen level={selectedLevel} onBackToMenu={handleBackToMenu} onNextLevel={handleNextLevel} soundEnabled={soundEnabled} />;
 }

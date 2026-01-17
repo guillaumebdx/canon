@@ -1,11 +1,60 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Image, Dimensions, PanResponder, Pressable, Text, Animated } from 'react-native';
 import { useState, useRef, useEffect, useMemo, memo } from 'react';
+import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
 import { SpaceBackground } from '../components/SpaceBackground';
 import { ParticleExplosion } from '../components/ParticleExplosion';
 import { getLevelData } from '../utils/levelLoader';
 import { BRICK_COLORS } from '../config/gameConfig';
 import { PhysicsEngine } from '../game/PhysicsEngine';
+
+const soundFiles = {
+  victory: require('../assets/sounds/victory.wav'),
+  star: require('../assets/sounds/star.wav'),
+};
+
+let loadedSounds = {};
+let soundEnabledRef = true;
+
+const loadSounds = async () => {
+  try {
+    await Audio.setAudioModeAsync({
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: false,
+    });
+    
+    for (const [name, file] of Object.entries(soundFiles)) {
+      const { sound } = await Audio.Sound.createAsync(file);
+      loadedSounds[name] = sound;
+    }
+  } catch (error) {
+    console.log('Error loading sounds:', error);
+  }
+};
+
+const playSound = async (soundName) => {
+  if (!soundEnabledRef) return;
+  try {
+    const sound = loadedSounds[soundName];
+    if (sound) {
+      await sound.replayAsync();
+    }
+  } catch (error) {
+    console.log('Error playing sound:', error);
+  }
+};
+
+const unloadSounds = async () => {
+  try {
+    for (const sound of Object.values(loadedSounds)) {
+      await sound.unloadAsync();
+    }
+    loadedSounds = {};
+  } catch (error) {
+    console.log('Error unloading sounds:', error);
+  }
+};
 
 const { width, height } = Dimensions.get('window');
 
@@ -65,18 +114,84 @@ const Brick = memo(({ brick }) => {
 });
 
 const StartButton = ({ onStart }) => {
+  const wave1Anim = useRef(new Animated.Value(0)).current;
+  const wave2Anim = useRef(new Animated.Value(0)).current;
+  const wave3Anim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const createWaveAnimation = (anim, delay) => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.parallel([
+            Animated.timing(anim, {
+              toValue: 1,
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.timing(anim, {
+            toValue: 0,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+    };
+
+    const anim1 = createWaveAnimation(wave1Anim, 0);
+    const anim2 = createWaveAnimation(wave2Anim, 500);
+    const anim3 = createWaveAnimation(wave3Anim, 1000);
+    
+    anim1.start();
+    anim2.start();
+    anim3.start();
+
+    return () => {
+      anim1.stop();
+      anim2.stop();
+      anim3.stop();
+    };
+  }, []);
+
+  const renderWave = (anim, index) => (
+    <Animated.View
+      key={index}
+      style={[
+        styles.startWave,
+        {
+          opacity: anim.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.8, 0.3, 0],
+          }),
+          transform: [{
+            scale: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [1, 1.5],
+            }),
+          }],
+        },
+      ]}
+    />
+  );
+
   return (
     <View style={styles.startOverlay}>
-      <Pressable
-        onPress={onStart}
-        style={({ pressed }) => [
-          styles.startButton,
-          pressed && styles.startButtonPressed,
-        ]}
-        android_ripple={{ color: 'rgba(255, 255, 255, 0.3)', borderless: false }}
-      >
-        <Text style={styles.startButtonText}>START</Text>
-      </Pressable>
+      <View style={styles.startButtonContainer}>
+        {renderWave(wave1Anim, 1)}
+        {renderWave(wave2Anim, 2)}
+        {renderWave(wave3Anim, 3)}
+        <Pressable
+          onPress={onStart}
+          style={({ pressed }) => [
+            styles.startButton,
+            pressed && styles.startButtonPressed,
+          ]}
+          android_ripple={{ color: 'rgba(255, 255, 255, 0.3)', borderless: false }}
+        >
+          <Text style={styles.startButtonText}>START</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -156,57 +271,65 @@ const MilestoneMessage = ({ message, starCount, onComplete }) => {
   );
 };
 
-const ResultScreen = ({ won, onRetry, onNextLevel, starCount }) => {
+const ResultScreen = ({ won, onRetry, onNextLevel, onBackToMenu, starCount }) => {
   return (
     <View style={styles.resultOverlay}>
       <View style={styles.resultFrame}>
-        <Text style={[styles.resultTitle, won ? styles.resultWon : styles.resultLost]}>
-          {won ? 'NIVEAU RÉUSSI !' : 'NIVEAU RATÉ'}
-        </Text>
-        {won && <StarDisplay count={starCount} animated={true} />}
-        <Pressable
-        onPress={won ? onNextLevel : onRetry}
-        style={({ pressed }) => [
-          styles.retryButton,
-          won && styles.nextLevelButton,
-          pressed && styles.retryButtonPressed,
-        ]}
-        android_ripple={{ color: 'rgba(255, 255, 255, 0.3)', borderless: false }}
-      >
-          <Text style={styles.retryButtonText}>{won ? 'NIVEAU SUIVANT' : 'RÉESSAYER'}</Text>
-        </Pressable>
-      </View>
+          <Text style={[styles.resultTitle, won ? styles.resultWon : styles.resultLost]}>
+            {won ? 'NIVEAU RÉUSSI !' : 'NIVEAU RATÉ'}
+          </Text>
+          {won && <StarDisplay count={starCount} animated={true} />}
+          
+          <View style={styles.resultButtonsRow}>
+            {won && (
+              <Pressable
+                onPress={onNextLevel}
+                style={({ pressed }) => [
+                  styles.resultButton,
+                  styles.nextLevelButton,
+                  pressed && styles.buttonPressed,
+                ]}
+                >
+                <Text style={styles.resultButtonText}>SUIVANT</Text>
+              </Pressable>
+            )}
+            
+            <Pressable
+              onPress={onRetry}
+              style={({ pressed }) => [
+                styles.resultButton,
+                styles.replayButton,
+                pressed && styles.buttonPressed,
+              ]}
+              >
+              <Text style={styles.resultButtonText}>REJOUER</Text>
+            </Pressable>
+          </View>
+          
+          <Pressable
+            onPress={onBackToMenu}
+            style={({ pressed }) => [
+              styles.menuButton,
+              pressed && styles.buttonPressed,
+            ]}
+            >
+            <Text style={styles.menuButtonText}>MENU</Text>
+          </Pressable>
+        </View>
     </View>
   );
 };
 
-const AnimatedStock = ({ stock }) => {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const prevStockRef = useRef(stock);
-
-  useEffect(() => {
-    if (stock < prevStockRef.current) {
-      Animated.sequence([
-        Animated.timing(scaleAnim, {
-          toValue: 1.4,
-          duration: 80,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          friction: 3,
-          tension: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-    prevStockRef.current = stock;
-  }, [stock]);
-
+const StockGauge = ({ stock, maxStock }) => {
+  const fillPercent = maxStock > 0 ? (stock / maxStock) * 100 : 0;
+  
   return (
-    <Animated.Text style={[styles.stockText, { transform: [{ scale: scaleAnim }] }]}>
-      {stock}
-    </Animated.Text>
+    <View style={styles.gaugeContainer}>
+      <View style={styles.gaugeOuter}>
+        <View style={[styles.gaugeFill, { height: `${fillPercent}%` }]} />
+      </View>
+      <Text style={styles.gaugeText}>{stock}</Text>
+    </View>
   );
 };
 
@@ -218,7 +341,7 @@ const GAME_PHASE = {
   LOST: 'lost',
 };
 
-export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
+export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled }) => {
   const [rotation, setRotation] = useState(0);
   const [gameState, setGameState] = useState({ balls: [], bricks: [], score: 0 });
   const [activeExplosions, setActiveExplosions] = useState([]);
@@ -234,6 +357,17 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
   const stockRef = useRef(0);
+
+  useEffect(() => {
+    loadSounds();
+    return () => {
+      unloadSounds();
+    };
+  }, []);
+
+  useEffect(() => {
+    soundEnabledRef = soundEnabled;
+  }, [soundEnabled]);
 
   useEffect(() => {
     setStock(levelConfig.stock);
@@ -255,6 +389,18 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
       setGameState(state);
       if (state.explosions && state.explosions.length > 0) {
         setActiveExplosions(prev => [...prev, ...state.explosions]);
+      }
+      if (state.soundEvents && state.soundEvents.length > 0) {
+        state.soundEvents.forEach(soundName => playSound(soundName));
+      }
+      if (state.hapticEvents && state.hapticEvents.length > 0) {
+        state.hapticEvents.forEach(intensity => {
+          if (intensity === 'light') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          } else if (intensity === 'medium') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          }
+        });
       }
     });
 
@@ -336,17 +482,20 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
       setCurrentStars(newStars);
       if (newStars < 3) {
         setMilestoneMessage({ text: getRandomMessage(), stars: newStars });
+        playSound('star');
       }
     }
     
     if (gameState.bricks.length === 0) {
       setGamePhase(GAME_PHASE.WON);
+      playSound('victory');
       return;
     }
     
     if (stockRef.current <= 0 && gameState.balls.length === 0) {
       if (currentStars >= 1 || newStars >= 1) {
         setGamePhase(GAME_PHASE.WON);
+        playSound('victory');
       } else {
         setGamePhase(GAME_PHASE.LOST);
       }
@@ -397,18 +546,6 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
       <SpaceBackground config={levelConfig.background} />
       <StatusBar style="light" />
       
-      <Pressable 
-        style={styles.backButton} 
-        onPress={onBackToMenu}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      >
-        <Text style={styles.backButtonText}>← Menu</Text>
-      </Pressable>
-      
-      <View style={styles.topRightContainer}>
-        <AnimatedStock stock={stock} />
-      </View>
-      
       {gameState.bricks.map(brick => (
         <Brick key={brick.id} brick={brick} />
       ))}
@@ -428,6 +565,8 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
           }}
         />
       ))}
+      
+      <StockGauge stock={stock} maxStock={levelConfig.stock} />
       
       <View style={styles.cannonContainer}>
         <Image 
@@ -450,7 +589,7 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel }) => {
       {gamePhase === GAME_PHASE.IDLE && <StartButton onStart={handleStart} />}
       {gamePhase === GAME_PHASE.COUNTDOWN && <Countdown count={countdown} />}
       {(gamePhase === GAME_PHASE.WON || gamePhase === GAME_PHASE.LOST) && (
-        <ResultScreen won={gamePhase === GAME_PHASE.WON} onRetry={handleRetry} onNextLevel={onNextLevel} starCount={currentStars} />
+        <ResultScreen won={gamePhase === GAME_PHASE.WON} onRetry={handleRetry} onNextLevel={onNextLevel} onBackToMenu={onBackToMenu} starCount={currentStars} />
       )}
       {milestoneMessage && (
         <MilestoneMessage
@@ -507,29 +646,39 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  topRightContainer: {
+  gaugeContainer: {
     position: 'absolute',
-    top: 40,
-    right: 20,
-    alignItems: 'flex-end',
-    zIndex: 1000,
+    right: 15,
+    bottom: 20,
+    alignItems: 'center',
+    backgroundColor: 'rgba(10, 10, 30, 0.7)',
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(100, 150, 255, 0.3)',
   },
-  stockText: {
-    color: '#00ffff',
-    fontSize: 24,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 255, 255, 0.5)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
-    marginBottom: 4,
+  gaugeOuter: {
+    width: 20,
+    height: 80,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(100, 150, 255, 0.4)',
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
   },
-  scoreText: {
-    color: '#fff',
-    fontSize: 32,
+  gaugeFill: {
+    width: '100%',
+    backgroundColor: '#00ccff',
+    borderRadius: 8,
+    opacity: 0.8,
+  },
+  gaugeText: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 14,
     fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
+    marginTop: 5,
   },
   backButton: {
     position: 'absolute',
@@ -555,31 +704,43 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     zIndex: 2000,
   },
+  startButtonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  startWave: {
+    position: 'absolute',
+    width: 220,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: '#ff66aa',
+  },
   startButton: {
-    backgroundColor: '#6633cc',
-    paddingHorizontal: 60,
-    paddingVertical: 20,
-    borderRadius: 16,
+    backgroundColor: 'rgba(20, 10, 40, 0.9)',
+    paddingHorizontal: 50,
+    paddingVertical: 18,
+    borderRadius: 30,
     borderWidth: 3,
-    borderColor: '#aa66ff',
-    shadowColor: '#aa66ff',
+    borderColor: '#6688ff',
+    shadowColor: '#ff66aa',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
-    shadowRadius: 20,
+    shadowRadius: 25,
     elevation: 10,
   },
   startButtonPressed: {
-    backgroundColor: '#5522aa',
+    backgroundColor: 'rgba(30, 20, 60, 0.9)',
     transform: [{ scale: 0.95 }],
   },
   startButtonText: {
-    color: '#fff',
-    fontSize: 36,
+    color: '#ffd700',
+    fontSize: 32,
     fontWeight: 'bold',
-    letterSpacing: 4,
-    textShadowColor: 'rgba(255, 255, 255, 0.5)',
+    letterSpacing: 6,
+    textShadowColor: 'rgba(255, 215, 0, 0.8)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 15,
   },
   countdownOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -599,20 +760,27 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 2000,
   },
   resultFrame: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingHorizontal: 40,
+    backgroundColor: 'rgba(10, 5, 30, 0.95)',
+    paddingHorizontal: 35,
     paddingVertical: 30,
     borderRadius: 20,
+    borderWidth: 3,
+    borderColor: '#6688ff',
     alignItems: 'center',
+    shadowColor: '#aa66ff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 15,
   },
   resultTitle: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 25,
     textAlign: 'center',
   },
   resultWon: {
@@ -627,31 +795,47 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 20,
   },
-  retryButton: {
-    backgroundColor: '#6633cc',
-    paddingHorizontal: 40,
-    paddingVertical: 16,
-    borderRadius: 12,
-    borderWidth: 3,
-    borderColor: '#aa66ff',
-    shadowColor: '#aa66ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 15,
-    elevation: 10,
-  },
-  retryButtonPressed: {
-    backgroundColor: '#5522aa',
-    transform: [{ scale: 0.95 }],
+  resultButton: {
+    paddingHorizontal: 22,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 2,
   },
   nextLevelButton: {
-    backgroundColor: '#22aa44',
+    backgroundColor: 'rgba(34, 170, 68, 0.3)',
     borderColor: '#44ff88',
-    shadowColor: '#44ff88',
   },
-  retryButtonText: {
+  replayButton: {
+    backgroundColor: 'rgba(102, 51, 204, 0.3)',
+    borderColor: '#aa66ff',
+  },
+  buttonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.95 }],
+  },
+  resultButtonText: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
+  resultButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 15,
+    marginBottom: 20,
+  },
+  menuButton: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 25,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#6688ff',
+  },
+  menuButtonText: {
+    color: '#88aaff',
+    fontSize: 14,
     fontWeight: 'bold',
     letterSpacing: 2,
   },

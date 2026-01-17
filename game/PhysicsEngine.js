@@ -29,6 +29,8 @@ export class PhysicsEngine {
     this.explosionIdCounter = 0;
     this.bricksDestroyed = 0;
     this.totalBricks = 0;
+    this.soundEvents = [];
+    this.hapticEvents = [];
     
     this.lastShootTime = 0;
     this.shootInterval = 100;
@@ -70,6 +72,7 @@ export class PhysicsEngine {
           if (brick.brickHealth <= 0) {
             this.score += BRICK_POINTS.destroy;
             this.bricksDestroyed++;
+            this.hapticEvents.push('medium');
             this.explosions.push({
               id: this.explosionIdCounter++,
               x: brick.position.x,
@@ -80,6 +83,7 @@ export class PhysicsEngine {
             this.bricks = this.bricks.filter(b => b !== brick);
           } else {
             this.score += BRICK_POINTS.hit;
+            this.hapticEvents.push('light');
           }
         }
       });
@@ -267,7 +271,11 @@ export class PhysicsEngine {
       explosions: this.getExplosions(),
       bricksDestroyed: this.bricksDestroyed,
       totalBricks: this.totalBricks,
+      soundEvents: [...this.soundEvents],
+      hapticEvents: [...this.hapticEvents],
     };
+    this.soundEvents = [];
+    this.hapticEvents = [];
     this.listeners.forEach(listener => listener(state));
   }
 

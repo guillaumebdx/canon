@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "hello-world-app",
-    "slug": "hello-world-app",
+    "name": "Brick Shot Galaxy",
+    "slug": "brick-shot-galaxy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.guillaumebdx.helloworldappappappappappappappapp"
+      "package": "com.guillaumebdx.brick-shot-galaxy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,6 +30,9 @@
       "eas": {
         "projectId": "6ee624c7-f9e4-45ab-90c8-ba1f20af4239"
       }
-    }
+    },
+    "plugins": [
+      "expo-audio"
+    ]
   }
 }

@@ -66,7 +66,7 @@ const Star = ({ star }) => (
   />
 );
 
-const LevelNode = ({ position, onPress }) => {
+const LevelNode = ({ position, onPress, isUnlocked, earnedStars }) => {
   return (
     <TouchableOpacity
       style={[
@@ -77,15 +77,26 @@ const LevelNode = ({ position, onPress }) => {
         },
       ]}
       onPress={() => onPress(position.level)}
-      activeOpacity={0.7}
+      activeOpacity={isUnlocked ? 0.7 : 1}
+      disabled={!isUnlocked}
     >
-      <View style={styles.levelCircle}>
+      <View style={[styles.levelCircle, !isUnlocked && styles.levelCircleLocked]}>
         <View style={styles.starsRow}>
-          <Text style={styles.starIcon}>★</Text>
-          <Text style={styles.starIcon}>★</Text>
-          <Text style={styles.starIcon}>★</Text>
+          {[1, 2, 3].map((starNum) => (
+            <Text 
+              key={starNum} 
+              style={[
+                styles.starIcon, 
+                starNum <= earnedStars ? styles.starEarned : styles.starEmpty
+              ]}
+            >
+              ★
+            </Text>
+          ))}
         </View>
-        <Text style={styles.levelNumber}>{position.level}</Text>
+        <Text style={[styles.levelNumber, !isUnlocked && styles.levelNumberLocked]}>
+          {position.level}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -130,12 +141,52 @@ const ConstellationLines = ({ positions }) => {
   );
 };
 
-export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled }) => {
+export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLevelUnlocked, levelStars, onResetProgress, onDebugSetLevel }) => {
   const stars = useMemo(() => generateStars(400), []);
   const levelPositions = useMemo(() => generateLevelPositions(), []);
   const scrollViewRef = useRef(null);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [creditsVisible, setCreditsVisible] = useState(false);
+  const [resetConfirmVisible, setResetConfirmVisible] = useState(false);
+  const [debugVisible, setDebugVisible] = useState(false);
+  const titleClickCount = useRef(0);
+  const titleClickTimer = useRef(null);
+
+  const handleTitlePress = () => {
+    titleClickCount.current += 1;
+    
+    if (titleClickTimer.current) {
+      clearTimeout(titleClickTimer.current);
+    }
+    
+    if (titleClickCount.current >= 7) {
+      titleClickCount.current = 0;
+      setDebugVisible(true);
+    } else {
+      titleClickTimer.current = setTimeout(() => {
+        titleClickCount.current = 0;
+      }, 2000);
+    }
+  };
+
+  const handleDebugSelectLevel = (level) => {
+    if (onDebugSetLevel) {
+      onDebugSetLevel(level);
+    }
+    setDebugVisible(false);
+  };
+
+  const handleLevelPress = (level) => {
+    if (level <= maxLevelUnlocked) {
+      onStartLevel(level);
+    }
+  };
+
+  const handleResetConfirm = () => {
+    onResetProgress();
+    setResetConfirmVisible(false);
+    setSettingsVisible(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -152,7 +203,9 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled }) => {
       </View>
 
       <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>BRICK SHOT</Text>
+        <TouchableOpacity onPress={handleTitlePress} activeOpacity={1}>
+          <Text style={styles.titleText}>BRICK SHOT</Text>
+        </TouchableOpacity>
         <Text style={styles.titleTextGalaxy}>GALAXY</Text>
       </View>
 
@@ -196,10 +249,10 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled }) => {
             </TouchableOpacity>
 
             <TouchableOpacity 
-              style={styles.settingButton}
-              onPress={() => {}}
+              style={[styles.settingButton, styles.resetButton]}
+              onPress={() => setResetConfirmVisible(true)}
             >
-              <Text style={styles.settingButtonText}>Recommencer à zéro</Text>
+              <Text style={[styles.settingButtonText, styles.resetButtonText]}>Recommencer à zéro</Text>
             </TouchableOpacity>
 
             <Text style={styles.versionText}>Version 1.0.0</Text>
@@ -240,6 +293,79 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled }) => {
         </View>
       </Modal>
 
+      <Modal
+        visible={resetConfirmVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setResetConfirmVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>⚠️ ATTENTION</Text>
+            
+            <Text style={styles.resetWarningText}>
+              Êtes-vous sûr de vouloir{'\n'}
+              recommencer à zéro ?{'\n\n'}
+              Toute votre progression{'\n'}
+              sera effacée !
+            </Text>
+
+            <View style={styles.resetButtonsRow}>
+              <Pressable 
+                style={[styles.resetConfirmButton, styles.resetCancelButton]}
+                onPress={() => setResetConfirmVisible(false)}
+              >
+                <Text style={styles.resetCancelButtonText}>Annuler</Text>
+              </Pressable>
+              
+              <Pressable 
+                style={[styles.resetConfirmButton, styles.resetDeleteButton]}
+                onPress={handleResetConfirm}
+              >
+                <Text style={styles.resetDeleteButtonText}>Effacer</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={debugVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setDebugVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>🛠️ DEBUG MODE</Text>
+            
+            <Text style={styles.debugText}>
+              Sélectionner un niveau{'\n'}
+              (3★ sur tous les précédents)
+            </Text>
+
+            <ScrollView style={styles.debugScrollView} contentContainerStyle={styles.debugGrid}>
+              {Array.from({ length: TOTAL_LEVELS }, (_, i) => i + 1).map((lvl) => (
+                <TouchableOpacity
+                  key={lvl}
+                  style={styles.debugLevelButton}
+                  onPress={() => handleDebugSelectLevel(lvl)}
+                >
+                  <Text style={styles.debugLevelText}>{lvl}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Pressable 
+              style={styles.closeButton}
+              onPress={() => setDebugVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Annuler</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       <ScrollView
         ref={scrollViewRef}
         style={styles.scrollView}
@@ -252,7 +378,9 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled }) => {
           <LevelNode
             key={position.level}
             position={position}
-            onPress={onStartLevel}
+            onPress={handleLevelPress}
+            isUnlocked={position.level <= maxLevelUnlocked}
+            earnedStars={levelStars[position.level] || 0}
           />
         ))}
       </ScrollView>
@@ -441,5 +569,98 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 30,
     marginBottom: 30,
+  },
+  levelCircleLocked: {
+    backgroundColor: 'rgba(40, 40, 60, 0.7)',
+    borderColor: '#444',
+  },
+  levelNumberLocked: {
+    color: '#666',
+    fontSize: 18,
+  },
+  starEarned: {
+    color: '#ffd700',
+  },
+  starEmpty: {
+    color: '#444',
+    textShadowRadius: 0,
+  },
+  resetButton: {
+    backgroundColor: 'rgba(255, 50, 50, 0.2)',
+    borderColor: '#ff4444',
+  },
+  resetButtonText: {
+    color: '#ff6666',
+  },
+  resetWarningText: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    lineHeight: 26,
+    marginBottom: 25,
+  },
+  resetButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: 15,
+  },
+  resetConfirmButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  resetCancelButton: {
+    backgroundColor: 'rgba(102, 136, 255, 0.3)',
+    borderWidth: 2,
+    borderColor: '#6688ff',
+  },
+  resetCancelButtonText: {
+    fontSize: 16,
+    color: '#88aaff',
+    fontWeight: 'bold',
+  },
+  resetDeleteButton: {
+    backgroundColor: 'rgba(255, 50, 50, 0.4)',
+    borderWidth: 2,
+    borderColor: '#ff4444',
+  },
+  resetDeleteButtonText: {
+    fontSize: 16,
+    color: '#ff6666',
+    fontWeight: 'bold',
+  },
+  debugText: {
+    fontSize: 14,
+    color: '#aaa',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  debugScrollView: {
+    maxHeight: 300,
+    width: '100%',
+    marginBottom: 20,
+  },
+  debugGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  debugLevelButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(102, 136, 255, 0.3)',
+    borderWidth: 2,
+    borderColor: '#6688ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  debugLevelText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

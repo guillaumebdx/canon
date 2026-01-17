@@ -297,8 +297,800 @@
         { "x": 0.30, "y": 0.40, "count": 8, "health": 1 }
       ]
     }
+  },
+   "9": {
+    "stock": 45,
+    "background": {
+      "gradientColors": ["#020617", "#020a2e", "#04133d", "#020617"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "20%", "y": "20%", "color": "#4fc3f7", "opacity": 0.18, "size": 220 },
+        { "x": "70%", "y": "40%", "color": "#9575cd", "opacity": 0.15, "size": 260 },
+        { "x": "50%", "y": "75%", "color": "#4db6ac", "opacity": 0.12, "size": 300 }
+      ],
+      "stars": {
+        "count": 180,
+        "colors": ["#ffffff", "#90caf9", "#ce93d8", "#80cbc4"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.15, "y": 0.14, "count": 2, "health": 5 },
+        { "x": 0.55, "y": 0.16, "count": 3, "health": 5 },
+
+        { "x": 0.32, "y": 0.20, "count": 1, "health": 3 },
+        { "x": 0.70, "y": 0.22, "count": 2, "health": 1 },
+
+        { "x": 0.10, "y": 0.26, "count": 3, "health": 1 },
+        { "x": 0.48, "y": 0.28, "count": 2, "health": 2 },
+        { "x": 0.75, "y": 0.30, "count": 1, "health": 3 },
+
+        { "x": 0.20, "y": 0.34, "count": 2, "health": 2 },
+        { "x": 0.40, "y": 0.36, "count": 3, "health": 1 },
+        { "x": 0.65, "y": 0.38, "count": 2, "health": 2 },
+
+        { "x": 0.30, "y": 0.42, "count": 1, "health": 3 },
+        { "x": 0.55, "y": 0.44, "count": 3, "health": 1 },
+
+        { "x": 0.15, "y": 0.48, "count": 2, "health": 2 },
+        { "x": 0.45, "y": 0.50, "count": 2, "health": 2 },
+        { "x": 0.72, "y": 0.52, "count": 1, "health": 3 }
+      ]
+    }
+  },
+  
+  "10": {
+    "stock": 48,
+    "background": {
+      "gradientColors": ["#220014", "#3a001f", "#5a0f2e", "#2a0015"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "30%", "color": "#ff5a7d", "opacity": 0.18, "size": 260 },
+        { "x": "65%", "y": "60%", "color": "#ff8fab", "opacity": 0.15, "size": 300 }
+      ],
+      "stars": {
+        "count": 120,
+        "colors": ["#ffffff", "#ffccd5", "#ffd6e0"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.35, "y": 0.12, "count": 2, "health": 2 },
+        { "x": 0.58, "y": 0.12, "count": 2, "health": 2 },
+        
+        { "x": 0.30, "y": 0.15, "count": 3, "health": 2 },
+        { "x": 0.58, "y": 0.15, "count": 3, "health": 2 },
+
+        { "x": 0.305, "y": 0.18, "count": 8, "health": 2 },
+        { "x": 0.33,  "y": 0.21, "count": 7, "health": 2 },
+        { "x": 0.38,  "y": 0.24, "count": 5, "health": 2 },
+        { "x": 0.43,  "y": 0.27, "count": 3, "health": 2 }
+      ]
+    }
+  },
+  "11": {
+    "stock": 62,
+    "background": {
+      "gradientColors": ["#1a0533", "#2d1b69", "#1e3a5f", "#0d1b2a"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "20%", "color": "#66aaff", "opacity": 0.18, "size": 260 },
+        { "x": "70%", "y": "50%", "color": "#aa66ff", "opacity": 0.15, "size": 300 },
+        { "x": "40%", "y": "80%", "color": "#ff6688", "opacity": 0.12, "size": 280 }
+      ],
+      "stars": {
+        "count": 150,
+        "colors": ["#ffffff", "#aaaaff", "#ff88aa"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.28, "y": 0.14, "count": 9, "health": 1 },
+
+        { "x": 0.33, "y": 0.18, "count": 7, "health": 2 },
+
+        { "x": 0.255, "y": 0.23, "count": 10, "health": 3 },
+
+        { "x": 0.20, "y": 0.29, "count": 12, "health": 4 },
+
+        { "x": 0.255, "y": 0.36, "count": 10, "health": 5 }
+      ]
+    }
+  },
+  "12": {
+    "stock": 88,
+    "background": {
+      "gradientColors": ["#050508", "#0a0a12", "#1a0f2e", "#0d1b2a"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "25%", "y": "20%", "color": "#6a5acd", "opacity": 0.18, "size": 260 },
+        { "x": "75%", "y": "45%", "color": "#ff6699", "opacity": 0.14, "size": 300 },
+        { "x": "50%", "y": "80%", "color": "#44ccaa", "opacity": 0.12, "size": 280 }
+      ],
+      "stars": {
+        "count": 180,
+        "colors": ["#ffffff", "#aaaaff", "#ff88aa", "#88ffdd"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.255, "y": 0.13, "count": 10, "health": 1 },
+        { "x": 0.33,  "y": 0.17, "count": 7,  "health": 1 },
+
+        { "x": 0.28,  "y": 0.21, "count": 9,  "health": 2 },
+        { "x": 0.38,  "y": 0.25, "count": 5,  "health": 2 },
+
+        { "x": 0.255, "y": 0.30, "count": 10, "health": 3 },
+        { "x": 0.33,  "y": 0.34, "count": 7,  "health": 3 },
+
+        { "x": 0.20,  "y": 0.39, "count": 12, "health": 4 },
+        { "x": 0.305, "y": 0.43, "count": 8,  "health": 4 },
+
+        { "x": 0.255, "y": 0.48, "count": 10, "health": 5 }
+      ]
+    }
+  },
+  "13": {
+    "stock": 82,
+    "background": {
+      "gradientColors": ["#050508", "#1a0533", "#2d1b69", "#0d1b2a"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "25%", "color": "#66aaff", "opacity": 0.18, "size": 260 },
+        { "x": "70%", "y": "55%", "color": "#ff6688", "opacity": 0.15, "size": 300 }
+      ],
+      "stars": {
+        "count": 160,
+        "colors": ["#ffffff", "#aaaaff", "#ff88aa", "#88ffdd"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.43,  "y": 0.14, "count": 3, "health": 1 },
+        { "x": 0.38,  "y": 0.17, "count": 5, "health": 1 },
+
+        { "x": 0.33,  "y": 0.20, "count": 7, "health": 2 },
+        { "x": 0.305, "y": 0.23, "count": 8, "health": 2 },
+
+        { "x": 0.28,  "y": 0.26, "count": 9, "health": 3 },
+        { "x": 0.255, "y": 0.29, "count": 10, "health": 3 },
+
+        { "x": 0.28,  "y": 0.32, "count": 9, "health": 4 },
+        { "x": 0.305, "y": 0.35, "count": 8, "health": 4 },
+
+        { "x": 0.33,  "y": 0.38, "count": 7, "health": 5 },
+        { "x": 0.38,  "y": 0.41, "count": 5, "health": 5 },
+        { "x": 0.43,  "y": 0.44, "count": 3, "health": 5 }
+      ]
+    }
+  },
+  "14": {
+    "stock": 86,
+    "background": {
+      "gradientColors": ["#020617", "#0b1026", "#1b1f3b", "#050814"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "20%", "y": "30%", "color": "#5c7cfa", "opacity": 0.18, "size": 260 },
+        { "x": "75%", "y": "55%", "color": "#ff6b9d", "opacity": 0.14, "size": 300 },
+        { "x": "50%", "y": "80%", "color": "#38d9a9", "opacity": 0.12, "size": 280 }
+      ],
+      "stars": {
+        "count": 170,
+        "colors": ["#ffffff", "#b5c7ff", "#ff9ecd", "#7fffe0"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.43,  "y": 0.14, "count": 3, "health": 1 },
+
+        { "x": 0.38,  "y": 0.18, "count": 5, "health": 1 },
+        { "x": 0.48,  "y": 0.18, "count": 3, "health": 1 },
+
+        { "x": 0.33,  "y": 0.22, "count": 7, "health": 2 },
+
+        { "x": 0.305, "y": 0.26, "count": 8, "health": 2 },
+        { "x": 0.38,  "y": 0.26, "count": 5, "health": 2 },
+
+        { "x": 0.28,  "y": 0.31, "count": 9, "health": 3 },
+
+        { "x": 0.255, "y": 0.35, "count": 10, "health": 3 },
+
+        { "x": 0.305, "y": 0.39, "count": 8, "health": 4 },
+
+        { "x": 0.33,  "y": 0.43, "count": 7, "health": 4 },
+
+        { "x": 0.38,  "y": 0.47, "count": 5, "health": 5 }
+      ]
+    }
+  },
+  "15": {
+    "stock": 75,
+    "background": {
+      "gradientColors": ["#050508", "#120014", "#2a001d", "#050508"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "25%", "color": "#ff3355", "opacity": 0.2, "size": 260 },
+        { "x": "70%", "y": "50%", "color": "#ff8844", "opacity": 0.16, "size": 300 },
+        { "x": "50%", "y": "80%", "color": "#ffaa66", "opacity": 0.12, "size": 280 }
+      ],
+      "stars": {
+        "count": 200,
+        "colors": ["#ffffff", "#ffaaaa", "#ffaa66"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.305, "y": 0.13, "count": 8,  "health": 1 },
+
+        { "x": 0.28,  "y": 0.17, "count": 9,  "health": 2 },
+        { "x": 0.255, "y": 0.21, "count": 10, "health": 2 },
+
+        { "x": 0.28,  "y": 0.25, "count": 9,  "health": 3 },
+        { "x": 0.255, "y": 0.29, "count": 10, "health": 3 },
+
+        { "x": 0.20,  "y": 0.34, "count": 12, "health": 4 },
+        { "x": 0.20,  "y": 0.38, "count": 12, "health": 4 },
+
+        { "x": 0.255, "y": 0.43, "count": 10, "health": 5 },
+        { "x": 0.255, "y": 0.47, "count": 10, "health": 5 }
+      ]
+    }
+  },
+  "16": {
+    "stock": 92,
+    "background": {
+      "gradientColors": ["#020617", "#0b132b", "#1c2541", "#3a506b"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "20%", "y": "25%", "color": "#5bc0eb", "opacity": 0.18, "size": 260 },
+        { "x": "70%", "y": "45%", "color": "#f72585", "opacity": 0.15, "size": 300 },
+        { "x": "50%", "y": "75%", "color": "#4cc9f0", "opacity": 0.12, "size": 280 }
+      ],
+      "stars": {
+        "count": 180,
+        "colors": ["#ffffff", "#bde0fe", "#ffc8dd", "#9bf6ff"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.28,  "y": 0.14, "count": 6, "health": 1 },
+        { "x": 0.45,  "y": 0.18, "count": 6, "health": 1 },
+
+        { "x": 0.255, "y": 0.22, "count": 7, "health": 2 },
+        { "x": 0.43,  "y": 0.26, "count": 7, "health": 2 },
+
+        { "x": 0.28,  "y": 0.30, "count": 8, "health": 3 },
+        { "x": 0.38,  "y": 0.34, "count": 8, "health": 3 },
+
+        { "x": 0.255, "y": 0.38, "count": 9, "health": 4 },
+        { "x": 0.33,  "y": 0.42, "count": 9, "health": 4 },
+
+        { "x": 0.305, "y": 0.47, "count": 8, "health": 5 }
+      ]
+    }
+  },
+  "17": {
+    "stock": 78,
+    "background": {
+      "gradientColors": ["#0f0c29", "#302b63", "#24243e", "#0f0c29"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "25%", "y": "30%", "color": "#9d4edd", "opacity": 0.2, "size": 280 },
+        { "x": "75%", "y": "60%", "color": "#f72585", "opacity": 0.16, "size": 260 }
+      ],
+      "stars": {
+        "count": 160,
+        "colors": ["#ffffff", "#e0aaff", "#ff99c8"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.12, "count": 12, "health": 2 },
+        { "x": 0.255, "y": 0.15, "count": 10, "health": 2 },
+        { "x": 0.305, "y": 0.18, "count": 8,  "health": 2 },
+        { "x": 0.355, "y": 0.21, "count": 6,  "health": 3 },
+        { "x": 0.405, "y": 0.24, "count": 4,  "health": 3 },
+        { "x": 0.455, "y": 0.27, "count": 2,  "health": 4 },
+        { "x": 0.405, "y": 0.30, "count": 4,  "health": 4 },
+        { "x": 0.355, "y": 0.33, "count": 6,  "health": 4 },
+        { "x": 0.305, "y": 0.36, "count": 8,  "health": 5 },
+        { "x": 0.255, "y": 0.39, "count": 10, "health": 5 },
+        { "x": 0.20,  "y": 0.42, "count": 12, "health": 5 }
+      ]
+    }
+  },
+  "18": {
+    "stock": 72,
+    "background": {
+      "gradientColors": ["#001219", "#005f73", "#0a9396", "#001219"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "25%", "color": "#00b4d8", "opacity": 0.2, "size": 280 },
+        { "x": "70%", "y": "55%", "color": "#48cae4", "opacity": 0.16, "size": 260 }
+      ],
+      "stars": {
+        "count": 150,
+        "colors": ["#ffffff", "#90e0ef", "#caf0f8"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.455, "y": 0.12, "count": 2,  "health": 2 },
+        { "x": 0.405, "y": 0.15, "count": 4,  "health": 2 },
+        { "x": 0.355, "y": 0.18, "count": 6,  "health": 2 },
+        { "x": 0.305, "y": 0.21, "count": 8,  "health": 3 },
+        { "x": 0.255, "y": 0.24, "count": 10, "health": 3 },
+        { "x": 0.305, "y": 0.27, "count": 8,  "health": 4 },
+        { "x": 0.355, "y": 0.30, "count": 6,  "health": 4 },
+        { "x": 0.405, "y": 0.33, "count": 4,  "health": 5 },
+        { "x": 0.455, "y": 0.36, "count": 2,  "health": 5 }
+      ]
+    }
+  },
+  "19": {
+    "stock": 85,
+    "background": {
+      "gradientColors": ["#10002b", "#240046", "#3c096c", "#10002b"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "25%", "y": "30%", "color": "#7b2cbf", "opacity": 0.2, "size": 280 },
+        { "x": "75%", "y": "50%", "color": "#c77dff", "opacity": 0.16, "size": 260 }
+      ],
+      "stars": {
+        "count": 170,
+        "colors": ["#ffffff", "#e0aaff", "#c77dff"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.12, "count": 12, "health": 2 },
+        { "x": 0.255, "y": 0.15, "count": 10, "health": 2 },
+        { "x": 0.305, "y": 0.18, "count": 8,  "health": 3 },
+        { "x": 0.355, "y": 0.21, "count": 6,  "health": 3 },
+        { "x": 0.405, "y": 0.24, "count": 4,  "health": 4 },
+        { "x": 0.455, "y": 0.27, "count": 2,  "health": 4 },
+        { "x": 0.455, "y": 0.30, "count": 2,  "health": 4 },
+        { "x": 0.455, "y": 0.33, "count": 2,  "health": 5 },
+        { "x": 0.455, "y": 0.36, "count": 2,  "health": 5 },
+        { "x": 0.455, "y": 0.39, "count": 2,  "health": 5 }
+      ]
+    }
+  },
+  "20": {
+    "stock": 90,
+    "background": {
+      "gradientColors": ["#03071e", "#370617", "#6a040f", "#03071e"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "25%", "color": "#dc2f02", "opacity": 0.18, "size": 280 },
+        { "x": "70%", "y": "55%", "color": "#f48c06", "opacity": 0.15, "size": 260 }
+      ],
+      "stars": {
+        "count": 160,
+        "colors": ["#ffffff", "#ffba08", "#faa307"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.12, "count": 6,  "health": 2 },
+        { "x": 0.50,  "y": 0.12, "count": 6,  "health": 2 },
+        { "x": 0.28,  "y": 0.15, "count": 6,  "health": 2 },
+        { "x": 0.42,  "y": 0.15, "count": 6,  "health": 2 },
+        { "x": 0.20,  "y": 0.18, "count": 6,  "health": 3 },
+        { "x": 0.50,  "y": 0.18, "count": 6,  "health": 3 },
+        { "x": 0.28,  "y": 0.21, "count": 6,  "health": 3 },
+        { "x": 0.42,  "y": 0.21, "count": 6,  "health": 3 },
+        { "x": 0.20,  "y": 0.24, "count": 6,  "health": 4 },
+        { "x": 0.50,  "y": 0.24, "count": 6,  "health": 4 },
+        { "x": 0.28,  "y": 0.27, "count": 6,  "health": 4 },
+        { "x": 0.42,  "y": 0.27, "count": 6,  "health": 4 },
+        { "x": 0.20,  "y": 0.30, "count": 6,  "health": 5 },
+        { "x": 0.50,  "y": 0.30, "count": 6,  "health": 5 }
+      ]
+    }
+  },
+  "21": {
+    "stock": 80,
+    "background": {
+      "gradientColors": ["#0d1b2a", "#1b263b", "#415a77", "#0d1b2a"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "35%", "y": "30%", "color": "#778da9", "opacity": 0.2, "size": 280 },
+        { "x": "65%", "y": "60%", "color": "#e0e1dd", "opacity": 0.12, "size": 260 }
+      ],
+      "stars": {
+        "count": 140,
+        "colors": ["#ffffff", "#e0e1dd", "#778da9"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.305, "y": 0.12, "count": 8,  "health": 2 },
+        { "x": 0.305, "y": 0.15, "count": 8,  "health": 2 },
+        { "x": 0.305, "y": 0.18, "count": 8,  "health": 3 },
+        { "x": 0.305, "y": 0.21, "count": 8,  "health": 3 },
+        { "x": 0.305, "y": 0.24, "count": 8,  "health": 4 },
+        { "x": 0.305, "y": 0.27, "count": 8,  "health": 4 },
+        { "x": 0.305, "y": 0.30, "count": 8,  "health": 5 },
+        { "x": 0.305, "y": 0.33, "count": 8,  "health": 5 }
+      ]
+    }
+  },
+  "22": {
+    "stock": 95,
+    "background": {
+      "gradientColors": ["#14213d", "#1d3557", "#457b9d", "#14213d"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "25%", "y": "25%", "color": "#a8dadc", "opacity": 0.18, "size": 280 },
+        { "x": "75%", "y": "55%", "color": "#e63946", "opacity": 0.14, "size": 260 }
+      ],
+      "stars": {
+        "count": 150,
+        "colors": ["#ffffff", "#a8dadc", "#f1faee"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.12, "count": 12, "health": 2 },
+        { "x": 0.20,  "y": 0.15, "count": 2,  "health": 3 },
+        { "x": 0.52,  "y": 0.15, "count": 2,  "health": 3 },
+        { "x": 0.20,  "y": 0.18, "count": 2,  "health": 3 },
+        { "x": 0.52,  "y": 0.18, "count": 2,  "health": 3 },
+        { "x": 0.20,  "y": 0.21, "count": 2,  "health": 4 },
+        { "x": 0.52,  "y": 0.21, "count": 2,  "health": 4 },
+        { "x": 0.20,  "y": 0.24, "count": 12, "health": 4 },
+        { "x": 0.20,  "y": 0.27, "count": 2,  "health": 4 },
+        { "x": 0.52,  "y": 0.27, "count": 2,  "health": 4 },
+        { "x": 0.20,  "y": 0.30, "count": 2,  "health": 5 },
+        { "x": 0.52,  "y": 0.30, "count": 2,  "health": 5 },
+        { "x": 0.20,  "y": 0.33, "count": 2,  "health": 5 },
+        { "x": 0.52,  "y": 0.33, "count": 2,  "health": 5 },
+        { "x": 0.20,  "y": 0.36, "count": 12, "health": 5 }
+      ]
+    }
+  },
+  "23": {
+    "stock": 88,
+    "background": {
+      "gradientColors": ["#2d00f7", "#6a00f4", "#8900f2", "#2d00f7"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "30%", "color": "#e500a4", "opacity": 0.2, "size": 280 },
+        { "x": "70%", "y": "55%", "color": "#f20089", "opacity": 0.16, "size": 260 }
+      ],
+      "stars": {
+        "count": 160,
+        "colors": ["#ffffff", "#ff85a1", "#fbb1bd"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.355, "y": 0.12, "count": 6,  "health": 2 },
+        { "x": 0.305, "y": 0.15, "count": 8,  "health": 2 },
+        { "x": 0.255, "y": 0.18, "count": 10, "health": 3 },
+        { "x": 0.255, "y": 0.21, "count": 10, "health": 3 },
+        { "x": 0.255, "y": 0.24, "count": 10, "health": 4 },
+        { "x": 0.255, "y": 0.27, "count": 10, "health": 4 },
+        { "x": 0.305, "y": 0.30, "count": 8,  "health": 5 },
+        { "x": 0.355, "y": 0.33, "count": 6,  "health": 5 }
+      ]
+    }
+  },
+  "24": {
+    "stock": 100,
+    "background": {
+      "gradientColors": ["#0b090a", "#161a1d", "#660708", "#0b090a"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "25%", "y": "30%", "color": "#a4161a", "opacity": 0.2, "size": 280 },
+        { "x": "75%", "y": "55%", "color": "#ba181b", "opacity": 0.16, "size": 260 }
+      ],
+      "stars": {
+        "count": 150,
+        "colors": ["#ffffff", "#f5f3f4", "#d3d3d3"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.12, "count": 12, "health": 3 },
+        { "x": 0.20,  "y": 0.15, "count": 3,  "health": 3 },
+        { "x": 0.36,  "y": 0.15, "count": 3,  "health": 2 },
+        { "x": 0.52,  "y": 0.15, "count": 3,  "health": 3 },
+        { "x": 0.20,  "y": 0.18, "count": 3,  "health": 4 },
+        { "x": 0.52,  "y": 0.18, "count": 3,  "health": 4 },
+        { "x": 0.20,  "y": 0.21, "count": 3,  "health": 4 },
+        { "x": 0.36,  "y": 0.21, "count": 3,  "health": 2 },
+        { "x": 0.52,  "y": 0.21, "count": 3,  "health": 4 },
+        { "x": 0.20,  "y": 0.24, "count": 12, "health": 4 },
+        { "x": 0.20,  "y": 0.27, "count": 3,  "health": 5 },
+        { "x": 0.52,  "y": 0.27, "count": 3,  "health": 5 },
+        { "x": 0.20,  "y": 0.30, "count": 3,  "health": 5 },
+        { "x": 0.36,  "y": 0.30, "count": 3,  "health": 3 },
+        { "x": 0.52,  "y": 0.30, "count": 3,  "health": 5 },
+        { "x": 0.20,  "y": 0.33, "count": 3,  "health": 5 },
+        { "x": 0.52,  "y": 0.33, "count": 3,  "health": 5 },
+        { "x": 0.20,  "y": 0.36, "count": 12, "health": 5 }
+      ]
+    }
+  },
+  "25": {
+    "stock": 92,
+    "background": {
+      "gradientColors": ["#006466", "#065a60", "#0b525b", "#006466"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "25%", "color": "#1b3a4b", "opacity": 0.2, "size": 280 },
+        { "x": "70%", "y": "55%", "color": "#144552", "opacity": 0.16, "size": 260 }
+      ],
+      "stars": {
+        "count": 160,
+        "colors": ["#ffffff", "#9db4c0", "#5c6b73"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.43,  "y": 0.12, "count": 3,  "health": 2 },
+        { "x": 0.38,  "y": 0.15, "count": 5,  "health": 2 },
+        { "x": 0.33,  "y": 0.18, "count": 7,  "health": 3 },
+        { "x": 0.28,  "y": 0.21, "count": 9,  "health": 3 },
+        { "x": 0.255, "y": 0.24, "count": 10, "health": 4 },
+        { "x": 0.255, "y": 0.27, "count": 10, "health": 4 },
+        { "x": 0.255, "y": 0.30, "count": 10, "health": 4 },
+        { "x": 0.255, "y": 0.33, "count": 10, "health": 5 },
+        { "x": 0.255, "y": 0.36, "count": 10, "health": 5 },
+        { "x": 0.255, "y": 0.39, "count": 10, "health": 5 }
+      ]
+    }
+  },
+  "26": {
+    "stock": 105,
+    "background": {
+      "gradientColors": ["#0f0f23", "#1a1a3e", "#2d2d5a", "#0f0f23"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "20%", "y": "20%", "color": "#ffd700", "opacity": 0.2, "size": 280 },
+        { "x": "80%", "y": "40%", "color": "#ffaa00", "opacity": 0.16, "size": 300 },
+        { "x": "50%", "y": "70%", "color": "#ff8800", "opacity": 0.14, "size": 260 }
+      ],
+      "stars": {
+        "count": 180,
+        "colors": ["#ffffff", "#ffd700", "#ffaa00"],
+        "minSize": 1,
+        "maxSize": 4,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.10, "count": 12, "health": 3 },
+        { "x": 0.255, "y": 0.13, "count": 10, "health": 3 },
+        { "x": 0.305, "y": 0.16, "count": 8,  "health": 3 },
+        { "x": 0.20,  "y": 0.19, "count": 12, "health": 4 },
+        { "x": 0.255, "y": 0.22, "count": 10, "health": 4 },
+        { "x": 0.305, "y": 0.25, "count": 8,  "health": 4 },
+        { "x": 0.20,  "y": 0.28, "count": 12, "health": 5 },
+        { "x": 0.255, "y": 0.31, "count": 10, "health": 5 },
+        { "x": 0.305, "y": 0.34, "count": 8,  "health": 5 }
+      ]
+    }
+  },
+  "27": {
+    "stock": 98,
+    "background": {
+      "gradientColors": ["#1a0a2e", "#2d1b4e", "#16213e", "#1a0a2e"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "25%", "y": "25%", "color": "#00ff88", "opacity": 0.18, "size": 280 },
+        { "x": "75%", "y": "50%", "color": "#00ffcc", "opacity": 0.15, "size": 300 }
+      ],
+      "stars": {
+        "count": 170,
+        "colors": ["#ffffff", "#00ff88", "#88ffcc"],
+        "minSize": 1,
+        "maxSize": 3,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.12, "count": 4,  "health": 2 },
+        { "x": 0.50,  "y": 0.12, "count": 4,  "health": 2 },
+        { "x": 0.20,  "y": 0.15, "count": 4,  "health": 2 },
+        { "x": 0.50,  "y": 0.15, "count": 4,  "health": 2 },
+        { "x": 0.20,  "y": 0.18, "count": 4,  "health": 3 },
+        { "x": 0.50,  "y": 0.18, "count": 4,  "health": 3 },
+        { "x": 0.35,  "y": 0.21, "count": 6,  "health": 3 },
+        { "x": 0.35,  "y": 0.24, "count": 6,  "health": 4 },
+        { "x": 0.20,  "y": 0.27, "count": 4,  "health": 4 },
+        { "x": 0.50,  "y": 0.27, "count": 4,  "health": 4 },
+        { "x": 0.20,  "y": 0.30, "count": 4,  "health": 5 },
+        { "x": 0.50,  "y": 0.30, "count": 4,  "health": 5 },
+        { "x": 0.20,  "y": 0.33, "count": 4,  "health": 5 },
+        { "x": 0.50,  "y": 0.33, "count": 4,  "health": 5 }
+      ]
+    }
+  },
+  "28": {
+    "stock": 110,
+    "background": {
+      "gradientColors": ["#0d0221", "#261447", "#3d1f5c", "#0d0221"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "30%", "y": "30%", "color": "#ff00ff", "opacity": 0.18, "size": 300 },
+        { "x": "70%", "y": "60%", "color": "#ff66ff", "opacity": 0.14, "size": 280 }
+      ],
+      "stars": {
+        "count": 200,
+        "colors": ["#ffffff", "#ff88ff", "#ffaaff"],
+        "minSize": 1,
+        "maxSize": 4,
+        "minOpacity": 0.3,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.10, "count": 12, "health": 4 },
+        { "x": 0.20,  "y": 0.13, "count": 2,  "health": 4 },
+        { "x": 0.35,  "y": 0.13, "count": 3,  "health": 2 },
+        { "x": 0.52,  "y": 0.13, "count": 2,  "health": 4 },
+        { "x": 0.20,  "y": 0.16, "count": 2,  "health": 4 },
+        { "x": 0.52,  "y": 0.16, "count": 2,  "health": 4 },
+        { "x": 0.20,  "y": 0.19, "count": 12, "health": 4 },
+        { "x": 0.20,  "y": 0.22, "count": 2,  "health": 5 },
+        { "x": 0.35,  "y": 0.22, "count": 3,  "health": 3 },
+        { "x": 0.52,  "y": 0.22, "count": 2,  "health": 5 },
+        { "x": 0.20,  "y": 0.25, "count": 2,  "health": 5 },
+        { "x": 0.52,  "y": 0.25, "count": 2,  "health": 5 },
+        { "x": 0.20,  "y": 0.28, "count": 12, "health": 5 },
+        { "x": 0.20,  "y": 0.31, "count": 2,  "health": 5 },
+        { "x": 0.35,  "y": 0.31, "count": 3,  "health": 3 },
+        { "x": 0.52,  "y": 0.31, "count": 2,  "health": 5 },
+        { "x": 0.20,  "y": 0.34, "count": 2,  "health": 5 },
+        { "x": 0.52,  "y": 0.34, "count": 2,  "health": 5 },
+        { "x": 0.20,  "y": 0.37, "count": 12, "health": 5 }
+      ]
+    }
+  },
+  "29": {
+    "stock": 95,
+    "background": {
+      "gradientColors": ["#000428", "#004e92", "#000428", "#001a33"],
+      "gradientLocations": [0, 0.4, 0.7, 1],
+      "nebulaClouds": [
+        { "x": "40%", "y": "30%", "color": "#00aaff", "opacity": 0.22, "size": 320 },
+        { "x": "60%", "y": "60%", "color": "#0066ff", "opacity": 0.18, "size": 280 }
+      ],
+      "stars": {
+        "count": 190,
+        "colors": ["#ffffff", "#aaddff", "#66bbff"],
+        "minSize": 1,
+        "maxSize": 4,
+        "minOpacity": 0.4,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.455, "y": 0.10, "count": 2,  "health": 2 },
+        { "x": 0.405, "y": 0.13, "count": 4,  "health": 2 },
+        { "x": 0.355, "y": 0.16, "count": 6,  "health": 3 },
+        { "x": 0.305, "y": 0.19, "count": 8,  "health": 3 },
+        { "x": 0.255, "y": 0.22, "count": 10, "health": 4 },
+        { "x": 0.20,  "y": 0.25, "count": 12, "health": 4 },
+        { "x": 0.20,  "y": 0.28, "count": 12, "health": 5 },
+        { "x": 0.20,  "y": 0.31, "count": 12, "health": 5 },
+        { "x": 0.20,  "y": 0.34, "count": 12, "health": 5 }
+      ]
+    }
+  },
+  "30": {
+    "stock": 120,
+    "background": {
+      "gradientColors": ["#0a0a0a", "#1a0a2e", "#2d1b4e", "#0a0a0a"],
+      "gradientLocations": [0, 0.3, 0.6, 1],
+      "nebulaClouds": [
+        { "x": "20%", "y": "20%", "color": "#ff0055", "opacity": 0.22, "size": 300 },
+        { "x": "50%", "y": "45%", "color": "#aa00ff", "opacity": 0.2, "size": 350 },
+        { "x": "80%", "y": "70%", "color": "#0055ff", "opacity": 0.18, "size": 280 }
+      ],
+      "stars": {
+        "count": 220,
+        "colors": ["#ffffff", "#ff88aa", "#aa88ff", "#88aaff"],
+        "minSize": 1,
+        "maxSize": 5,
+        "minOpacity": 0.4,
+        "maxOpacity": 1
+      }
+    },
+    "bricks": {
+      "rows": [
+        { "x": 0.20,  "y": 0.08, "count": 12, "health": 3 },
+        { "x": 0.255, "y": 0.11, "count": 10, "health": 3 },
+        { "x": 0.305, "y": 0.14, "count": 8,  "health": 4 },
+        { "x": 0.355, "y": 0.17, "count": 6,  "health": 4 },
+        { "x": 0.405, "y": 0.20, "count": 4,  "health": 5 },
+        { "x": 0.455, "y": 0.23, "count": 2,  "health": 5 },
+        { "x": 0.405, "y": 0.26, "count": 4,  "health": 5 },
+        { "x": 0.355, "y": 0.29, "count": 6,  "health": 5 },
+        { "x": 0.305, "y": 0.32, "count": 8,  "health": 5 },
+        { "x": 0.255, "y": 0.35, "count": 10, "health": 5 },
+        { "x": 0.20,  "y": 0.38, "count": 12, "health": 5 },
+        { "x": 0.20,  "y": 0.41, "count": 12, "health": 5 },
+        { "x": 0.20,  "y": 0.44, "count": 12, "health": 5 }
+      ]
+    }
   }
-
-
 }
 

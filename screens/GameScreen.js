@@ -341,7 +341,7 @@ const GAME_PHASE = {
   LOST: 'lost',
 };
 
-export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled }) => {
+export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onLevelComplete }) => {
   const [rotation, setRotation] = useState(0);
   const [gameState, setGameState] = useState({ balls: [], bricks: [], score: 0 });
   const [activeExplosions, setActiveExplosions] = useState([]);
@@ -489,18 +489,25 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled }) =
     if (gameState.bricks.length === 0) {
       setGamePhase(GAME_PHASE.WON);
       playSound('victory');
+      if (onLevelComplete) {
+        onLevelComplete(level, 3);
+      }
       return;
     }
     
     if (stockRef.current <= 0 && gameState.balls.length === 0) {
-      if (currentStars >= 1 || newStars >= 1) {
+      const finalStars = Math.max(currentStars, newStars);
+      if (finalStars >= 1) {
         setGamePhase(GAME_PHASE.WON);
         playSound('victory');
+        if (onLevelComplete) {
+          onLevelComplete(level, finalStars);
+        }
       } else {
         setGamePhase(GAME_PHASE.LOST);
       }
     }
-  }, [gamePhase, gameState.bricks.length, gameState.balls.length, gameState.bricksDestroyed]);
+  }, [gamePhase, gameState.bricks.length, gameState.balls.length, gameState.bricksDestroyed, level, onLevelComplete]);
 
   const handleStart = () => {
     setGamePhase(GAME_PHASE.COUNTDOWN);

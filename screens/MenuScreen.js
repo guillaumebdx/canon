@@ -1,10 +1,10 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Modal, Switch, Pressable } from 'react-native';
-import Svg, { Circle, Line, Defs, RadialGradient, Stop } from 'react-native-svg';
+import Svg, { Circle } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
-const TOTAL_LEVELS = 30;
+const TOTAL_LEVELS = 80;
 const LEVEL_SPACING = 120;
 const NODE_SIZE = 70;
 const CONTENT_HEIGHT = TOTAL_LEVELS * LEVEL_SPACING + 200;
@@ -80,6 +80,13 @@ const LevelNode = ({ position, onPress, isUnlocked, earnedStars }) => {
       activeOpacity={isUnlocked ? 0.7 : 1}
       disabled={!isUnlocked}
     >
+      {isUnlocked && (
+        <>
+          <View style={[styles.levelTrail, styles.levelTrail1]} />
+          <View style={[styles.levelTrail, styles.levelTrail2]} />
+          <View style={[styles.levelTrail, styles.levelTrail3]} />
+        </>
+      )}
       <View style={[styles.levelCircle, !isUnlocked && styles.levelCircleLocked]}>
         <View style={styles.starsRow}>
           {[1, 2, 3].map((starNum) => (
@@ -102,46 +109,63 @@ const LevelNode = ({ position, onPress, isUnlocked, earnedStars }) => {
   );
 };
 
+const ConnectionLine = ({ from, to }) => {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+  
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        left: from.x,
+        top: from.y,
+        width: length,
+        height: 2,
+        backgroundColor: '#66aaff',
+        opacity: 0.6,
+        transform: [{ rotate: `${angle}deg` }],
+        transformOrigin: 'left center',
+      }}
+    />
+  );
+};
+
 const ConstellationLines = ({ positions }) => {
   return (
-    <Svg style={StyleSheet.absoluteFill} width={width} height={CONTENT_HEIGHT}>
-      <Defs>
-        <RadialGradient id="lineGlow" cx="50%" cy="50%" rx="50%" ry="50%">
-          <Stop offset="0%" stopColor="#66aaff" stopOpacity="0.8" />
-          <Stop offset="100%" stopColor="#66aaff" stopOpacity="0" />
-        </RadialGradient>
-      </Defs>
+    <>
       {positions.map((pos, index) => {
         if (index === 0) return null;
         const prevPos = positions[index - 1];
         return (
-          <React.Fragment key={`line-${index}`}>
-            <Line
-              x1={prevPos.x}
-              y1={prevPos.y}
-              x2={pos.x}
-              y2={pos.y}
-              stroke="#66aaff"
-              strokeWidth={2}
-              opacity={0.6}
-            />
-            <Line
-              x1={prevPos.x}
-              y1={prevPos.y}
-              x2={pos.x}
-              y2={pos.y}
-              stroke="#aaddff"
-              strokeWidth={1}
-              opacity={0.9}
-            />
-          </React.Fragment>
+          <ConnectionLine key={`line-${index}`} from={prevPos} to={pos} />
         );
       })}
-    </Svg>
+    </>
   );
 };
 
-export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLevelUnlocked, levelStars, onResetProgress, onDebugSetLevel }) => {
+const CheckpointBar = ({ checkpoint, totalStars, onPress }) => {
+  const isUnlocked = totalStars >= checkpoint.requiredStars;
+  return (
+    <View style={styles.checkpointBar}>
+      <View style={[styles.checkpointLine, isUnlocked && styles.checkpointLineUnlocked]} />
+      <TouchableOpacity 
+        style={[styles.checkpointBadge, isUnlocked && styles.checkpointBadgeUnlocked]}
+        onPress={() => !isUnlocked && onPress && onPress(checkpoint)}
+        activeOpacity={isUnlocked ? 1 : 0.7}
+      >
+        <Text style={styles.checkpointStars}>★ {checkpoint.requiredStars}</Text>
+        {!isUnlocked && <Text style={styles.checkpointLabel}>requis</Text>}
+        {isUnlocked && <Text style={styles.checkpointLabelUnlocked}>✓</Text>}
+      </TouchableOpacity>
+      <View style={[styles.checkpointLine, isUnlocked && styles.checkpointLineUnlocked]} />
+    </View>
+  );
+};
+
+export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLevelUnlocked, levelStars, onResetProgress, onDebugSetLevel, totalStars, checkpointInfo }) => {
   const stars = useMemo(() => generateStars(400), []);
   const levelPositions = useMemo(() => generateLevelPositions(), []);
   const scrollViewRef = useRef(null);
@@ -149,8 +173,15 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLev
   const [creditsVisible, setCreditsVisible] = useState(false);
   const [resetConfirmVisible, setResetConfirmVisible] = useState(false);
   const [debugVisible, setDebugVisible] = useState(false);
+  const [checkpointModalVisible, setCheckpointModalVisible] = useState(false);
+  const [selectedCheckpoint, setSelectedCheckpoint] = useState(null);
   const titleClickCount = useRef(0);
   const titleClickTimer = useRef(null);
+
+  const handleCheckpointPress = (checkpoint) => {
+    setSelectedCheckpoint(checkpoint);
+    setCheckpointModalVisible(true);
+  };
 
   const handleTitlePress = () => {
     titleClickCount.current += 1;
@@ -176,8 +207,15 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLev
     setDebugVisible(false);
   };
 
+  const isLevelBlocked = (level) => {
+    if (level > maxLevelUnlocked) return true;
+    const checkpoint = checkpointInfo?.find(cp => cp.level === level);
+    if (checkpoint && checkpoint.isBlocked) return true;
+    return false;
+  };
+
   const handleLevelPress = (level) => {
-    if (level <= maxLevelUnlocked) {
+    if (!isLevelBlocked(level)) {
       onStartLevel(level);
     }
   };
@@ -207,6 +245,10 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLev
           <Text style={styles.titleText}>BRICK SHOT</Text>
         </TouchableOpacity>
         <Text style={styles.titleTextGalaxy}>GALAXY</Text>
+        <View style={styles.totalStarsContainer}>
+          <Text style={styles.totalStarsIcon}>★</Text>
+          <Text style={styles.totalStarsText}>{totalStars || 0}</Text>
+        </View>
       </View>
 
       <TouchableOpacity 
@@ -366,6 +408,46 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLev
         </View>
       </Modal>
 
+      <Modal
+        visible={checkpointModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setCheckpointModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.checkpointModalContent}>
+            <Text style={styles.checkpointModalTitle}>🚧 CHECKPOINT</Text>
+            
+            {selectedCheckpoint && (
+              <>
+                <Text style={styles.checkpointModalMessage}>
+                  Pour débloquer le niveau {selectedCheckpoint.level},{'\n'}
+                  tu dois obtenir {selectedCheckpoint.requiredStars} ★
+                </Text>
+                
+                <View style={styles.checkpointModalStarsRow}>
+                  <Text style={styles.checkpointModalCurrentStars}>★ {totalStars}</Text>
+                  <Text style={styles.checkpointModalSlash}>/</Text>
+                  <Text style={styles.checkpointModalRequiredStars}>{selectedCheckpoint.requiredStars}</Text>
+                </View>
+                
+                <Text style={styles.checkpointModalHint}>
+                  Il te manque {selectedCheckpoint.requiredStars - totalStars} ★{'\n'}
+                  Rejoue des niveaux pour améliorer tes scores !
+                </Text>
+              </>
+            )}
+
+            <Pressable 
+              style={styles.closeButton}
+              onPress={() => setCheckpointModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Compris !</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       <ScrollView
         ref={scrollViewRef}
         style={styles.scrollView}
@@ -379,10 +461,25 @@ export const MenuScreen = ({ onStartLevel, soundEnabled, setSoundEnabled, maxLev
             key={position.level}
             position={position}
             onPress={handleLevelPress}
-            isUnlocked={position.level <= maxLevelUnlocked}
+            isUnlocked={!isLevelBlocked(position.level)}
             earnedStars={levelStars[position.level] || 0}
           />
         ))}
+        
+        {checkpointInfo && checkpointInfo.map((checkpoint) => {
+          const prevLevelPos = levelPositions[checkpoint.level - 2];
+          const checkpointLevelPos = levelPositions[checkpoint.level - 1];
+          if (!prevLevelPos || !checkpointLevelPos) return null;
+          const yPosition = (prevLevelPos.y + checkpointLevelPos.y) / 2;
+          return (
+            <View 
+              key={`checkpoint-${checkpoint.level}`} 
+              style={[styles.checkpointBarContainer, { top: yPosition - 25 }]}
+            >
+              <CheckpointBar checkpoint={checkpoint} totalStars={totalStars} onPress={handleCheckpointPress} />
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -422,6 +519,34 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 10,
     elevation: 10,
+    zIndex: 10,
+  },
+  levelTrail: {
+    position: 'absolute',
+    borderRadius: NODE_SIZE,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+  },
+  levelTrail1: {
+    width: NODE_SIZE + 10,
+    height: NODE_SIZE + 10,
+    top: -5,
+    left: -5,
+    borderColor: 'rgba(102, 136, 255, 0.3)',
+  },
+  levelTrail2: {
+    width: NODE_SIZE + 20,
+    height: NODE_SIZE + 20,
+    top: -10,
+    left: -10,
+    borderColor: 'rgba(102, 136, 255, 0.15)',
+  },
+  levelTrail3: {
+    width: NODE_SIZE + 30,
+    height: NODE_SIZE + 30,
+    top: -15,
+    left: -15,
+    borderColor: 'rgba(102, 136, 255, 0.08)',
   },
   starsRow: {
     flexDirection: 'row',
@@ -662,5 +787,141 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  totalStarsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#ffd700',
+  },
+  totalStarsIcon: {
+    fontSize: 24,
+    color: '#ffd700',
+    marginRight: 8,
+    textShadowColor: 'rgba(255, 215, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  totalStarsText: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(255, 215, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
+  },
+  checkpointBarContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 50,
+    zIndex: 50,
+  },
+  checkpointBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+  },
+  checkpointLine: {
+    flex: 1,
+    height: 3,
+    backgroundColor: '#ff4466',
+    opacity: 0.8,
+  },
+  checkpointLineUnlocked: {
+    backgroundColor: '#44ff66',
+  },
+  checkpointBadge: {
+    backgroundColor: 'rgba(255, 68, 102, 0.3)',
+    borderWidth: 2,
+    borderColor: '#ff4466',
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 6,
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  checkpointBadgeUnlocked: {
+    backgroundColor: 'rgba(68, 255, 102, 0.3)',
+    borderColor: '#44ff66',
+  },
+  checkpointStars: {
+    fontSize: 14,
+    color: '#ffd700',
+    fontWeight: 'bold',
+  },
+  checkpointLabel: {
+    fontSize: 10,
+    color: '#ff6688',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  checkpointLabelUnlocked: {
+    fontSize: 12,
+    color: '#44ff66',
+    fontWeight: 'bold',
+  },
+  checkpointModalContent: {
+    backgroundColor: 'rgba(30, 30, 60, 0.95)',
+    borderRadius: 25,
+    borderWidth: 3,
+    borderColor: '#ff8800',
+    padding: 30,
+    width: width * 0.85,
+    alignItems: 'center',
+  },
+  checkpointModalTitle: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#ff8800',
+    marginBottom: 20,
+    textShadowColor: 'rgba(255, 136, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  checkpointModalMessage: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 20,
+  },
+  checkpointModalStarsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 25,
+    paddingVertical: 12,
+    borderRadius: 15,
+  },
+  checkpointModalCurrentStars: {
+    fontSize: 24,
+    color: '#ffd700',
+    fontWeight: 'bold',
+  },
+  checkpointModalSlash: {
+    fontSize: 24,
+    color: '#888',
+    marginHorizontal: 10,
+  },
+  checkpointModalRequiredStars: {
+    fontSize: 24,
+    color: '#ff8800',
+    fontWeight: 'bold',
+  },
+  checkpointModalHint: {
+    fontSize: 14,
+    color: '#aaa',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 25,
+    fontStyle: 'italic',
   },
 });

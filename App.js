@@ -1,8 +1,27 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { MenuScreen } from './screens/MenuScreen';
 import { GameScreen } from './screens/GameScreen';
 import { getLevelCount } from './utils/levelLoader';
 import { initDatabase, getAllProgress, saveLevelProgress, resetAllProgress, debugSetLevel } from './services/database';
+
+const CHECKPOINT_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80];
+const STARS_PERCENTAGE_REQUIRED = 0.78;
+
+const getRequiredStarsForCheckpoint = (checkpointLevel) => {
+  const levelsBeforeCheckpoint = checkpointLevel - 1;
+  const maxStars = levelsBeforeCheckpoint * 3;
+  return Math.ceil(maxStars * STARS_PERCENTAGE_REQUIRED);
+};
+
+const getTotalStars = (levelStars) => {
+  return Object.values(levelStars).reduce((sum, stars) => sum + stars, 0);
+};
+
+const isCheckpointBlocked = (nextLevel, totalStars) => {
+  if (!CHECKPOINT_LEVELS.includes(nextLevel)) return false;
+  const requiredStars = getRequiredStarsForCheckpoint(nextLevel);
+  return totalStars < requiredStars;
+};
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('menu');
@@ -11,6 +30,8 @@ export default function App() {
   const [maxLevelUnlocked, setMaxLevelUnlocked] = useState(1);
   const [levelStars, setLevelStars] = useState({});
   const [isDbReady, setIsDbReady] = useState(false);
+
+  const totalStars = useMemo(() => getTotalStars(levelStars), [levelStars]);
 
   useEffect(() => {
     initDatabase();
@@ -74,6 +95,27 @@ export default function App() {
     setMaxLevelUnlocked(targetLevel);
   }, []);
 
+  const checkpointInfo = useMemo(() => {
+    return CHECKPOINT_LEVELS.map(level => ({
+      level,
+      requiredStars: getRequiredStarsForCheckpoint(level),
+      isBlocked: isCheckpointBlocked(level, totalStars),
+    }));
+  }, [totalStars]);
+
+  const getNextLevelCheckpointBlock = useCallback((currentLevel) => {
+    const nextLevel = currentLevel + 1;
+    if (!CHECKPOINT_LEVELS.includes(nextLevel)) return null;
+    const requiredStars = getRequiredStarsForCheckpoint(nextLevel);
+    if (totalStars >= requiredStars) return null;
+    return {
+      nextLevel,
+      requiredStars,
+      currentStars: totalStars,
+      missingStars: requiredStars - totalStars,
+    };
+  }, [totalStars]);
+
   if (!isDbReady) {
     return null;
   }
@@ -88,6 +130,8 @@ export default function App() {
         levelStars={levelStars}
         onResetProgress={handleResetProgress}
         onDebugSetLevel={handleDebugSetLevel}
+        totalStars={totalStars}
+        checkpointInfo={checkpointInfo}
       />
     );
   }
@@ -99,6 +143,7 @@ export default function App() {
       onNextLevel={handleNextLevel} 
       soundEnabled={soundEnabled}
       onLevelComplete={handleLevelComplete}
+      getNextLevelCheckpointBlock={getNextLevelCheckpointBlock}
     />
   );
 }

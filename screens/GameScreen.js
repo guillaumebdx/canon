@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Image, Dimensions, PanResponder, Pressable, Text, Animated } from 'react-native';
+import { StyleSheet, View, Image, Dimensions, PanResponder, Pressable, Text, Animated, TouchableOpacity } from 'react-native';
 import { useState, useRef, useEffect, useMemo, memo } from 'react';
 import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
@@ -271,12 +271,47 @@ const MilestoneMessage = ({ message, starCount, onComplete }) => {
   );
 };
 
-const ResultScreen = ({ won, onRetry, onNextLevel, onBackToMenu, starCount }) => {
+const CheckpointBlockedPopup = ({ checkpointInfo, onBackToMenu }) => {
+  return (
+    <View style={styles.checkpointOverlay}>
+      <View style={styles.checkpointFrame}>
+        <Text style={styles.checkpointTitle}>🚧 CHECKPOINT</Text>
+        <Text style={styles.checkpointMessage}>
+          Il te manque {checkpointInfo.missingStars} ★ pour{'\n'}
+          débloquer le niveau {checkpointInfo.nextLevel}
+        </Text>
+        <View style={styles.checkpointStarsInfo}>
+          <Text style={styles.checkpointCurrentStars}>★ {checkpointInfo.currentStars}</Text>
+          <Text style={styles.checkpointSlash}>/</Text>
+          <Text style={styles.checkpointRequiredStars}>{checkpointInfo.requiredStars}</Text>
+        </View>
+        <Text style={styles.checkpointHint}>
+          Retourne améliorer tes scores !
+        </Text>
+        <Pressable
+          onPress={onBackToMenu}
+          style={({ pressed }) => [
+            styles.checkpointButton,
+            pressed && styles.buttonPressed,
+          ]}
+        >
+          <Text style={styles.checkpointButtonText}>MENU</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+};
+
+const ResultScreen = ({ won, onRetry, onNextLevel, onBackToMenu, starCount, checkpointBlocked, level }) => {
+  if (checkpointBlocked) {
+    return <CheckpointBlockedPopup checkpointInfo={checkpointBlocked} onBackToMenu={onBackToMenu} />;
+  }
+
   return (
     <View style={styles.resultOverlay}>
       <View style={styles.resultFrame}>
           <Text style={[styles.resultTitle, won ? styles.resultWon : styles.resultLost]}>
-            {won ? 'NIVEAU RÉUSSI !' : 'NIVEAU RATÉ'}
+            {won ? `NIVEAU ${level} RÉUSSI !` : `NIVEAU ${level} RATÉ`}
           </Text>
           {won && <StarDisplay count={starCount} animated={true} />}
           
@@ -341,7 +376,7 @@ const GAME_PHASE = {
   LOST: 'lost',
 };
 
-export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onLevelComplete }) => {
+export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onLevelComplete, getNextLevelCheckpointBlock }) => {
   const [rotation, setRotation] = useState(0);
   const [gameState, setGameState] = useState({ balls: [], bricks: [], score: 0 });
   const [activeExplosions, setActiveExplosions] = useState([]);
@@ -350,6 +385,7 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
   const [stock, setStock] = useState(0);
   const [currentStars, setCurrentStars] = useState(0);
   const [milestoneMessage, setMilestoneMessage] = useState(null);
+  const [checkpointBlocked, setCheckpointBlocked] = useState(null);
   const levelConfig = useMemo(() => getLevelData(level), [level]);
 
   const rotationRef = useRef(0);
@@ -492,6 +528,10 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
       if (onLevelComplete) {
         onLevelComplete(level, 3);
       }
+      if (getNextLevelCheckpointBlock) {
+        const blocked = getNextLevelCheckpointBlock(level);
+        if (blocked) setCheckpointBlocked(blocked);
+      }
       return;
     }
     
@@ -503,11 +543,15 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
         if (onLevelComplete) {
           onLevelComplete(level, finalStars);
         }
+        if (getNextLevelCheckpointBlock) {
+          const blocked = getNextLevelCheckpointBlock(level);
+          if (blocked) setCheckpointBlocked(blocked);
+        }
       } else {
         setGamePhase(GAME_PHASE.LOST);
       }
     }
-  }, [gamePhase, gameState.bricks.length, gameState.balls.length, gameState.bricksDestroyed, level, onLevelComplete]);
+  }, [gamePhase, gameState.bricks.length, gameState.balls.length, gameState.bricksDestroyed, level, onLevelComplete, getNextLevelCheckpointBlock]);
 
   const handleStart = () => {
     setGamePhase(GAME_PHASE.COUNTDOWN);
@@ -522,10 +566,40 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
     setActiveExplosions([]);
     setCurrentStars(0);
     setMilestoneMessage(null);
+    setCheckpointBlocked(null);
     if (physicsEngineRef.current) {
       physicsEngineRef.current.loadLevel(levelConfig);
     }
   };
+
+  const handleSkip = () => {
+    if (stockRef.current > 0) return;
+    
+    const destroyed = gameState.bricksDestroyed || 0;
+    const totalBricks = gameState.totalBricks || 1;
+    const percentage = (destroyed / totalBricks) * 100;
+    
+    let finalStars = currentStars;
+    if (percentage >= 100) finalStars = 3;
+    else if (percentage >= 90) finalStars = Math.max(finalStars, 2);
+    else if (percentage >= 70) finalStars = Math.max(finalStars, 1);
+    
+    if (finalStars >= 1) {
+      setGamePhase(GAME_PHASE.WON);
+      playSound('victory');
+      if (onLevelComplete) {
+        onLevelComplete(level, finalStars);
+      }
+      if (getNextLevelCheckpointBlock) {
+        const blocked = getNextLevelCheckpointBlock(level);
+        if (blocked) setCheckpointBlocked(blocked);
+      }
+    } else {
+      setGamePhase(GAME_PHASE.LOST);
+    }
+  };
+
+  const canSkip = gamePhase === GAME_PHASE.PLAYING && stockRef.current <= 0 && gameState.balls.length > 0;
 
   const startRotationRef = useRef(0);
   
@@ -575,6 +649,15 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
       
       <StockGauge stock={stock} maxStock={levelConfig.stock} />
       
+      <TouchableOpacity style={styles.backButton} onPress={onBackToMenu}>
+        <Text style={styles.backButtonText}>✕</Text>
+      </TouchableOpacity>
+      {canSkip && (
+        <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+          <Text style={styles.skipButtonText}>⏩</Text>
+        </TouchableOpacity>
+      )}
+      
       <View style={styles.cannonContainer}>
         <Image 
           source={require('../assets/canon/socle.png')} 
@@ -596,7 +679,7 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
       {gamePhase === GAME_PHASE.IDLE && <StartButton onStart={handleStart} />}
       {gamePhase === GAME_PHASE.COUNTDOWN && <Countdown count={countdown} />}
       {(gamePhase === GAME_PHASE.WON || gamePhase === GAME_PHASE.LOST) && (
-        <ResultScreen won={gamePhase === GAME_PHASE.WON} onRetry={handleRetry} onNextLevel={onNextLevel} onBackToMenu={onBackToMenu} starCount={currentStars} />
+        <ResultScreen won={gamePhase === GAME_PHASE.WON} onRetry={handleRetry} onNextLevel={onNextLevel} onBackToMenu={onBackToMenu} starCount={currentStars} checkpointBlocked={checkpointBlocked} level={level} />
       )}
       {milestoneMessage && (
         <MilestoneMessage
@@ -689,7 +772,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    bottom: 20,
     left: 20,
     backgroundColor: 'rgba(102, 68, 170, 0.8)',
     paddingHorizontal: 20,
@@ -700,6 +783,23 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   backButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  skipButton: {
+    position: 'absolute',
+    bottom: 70,
+    left: 20,
+    backgroundColor: 'rgba(255, 150, 50, 0.8)',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#ffaa44',
+    zIndex: 1000,
+  },
+  skipButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
@@ -881,5 +981,101 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 20,
     marginBottom: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    bottom: 30,
+    left: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  backButtonText: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  checkpointOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2000,
+  },
+  checkpointFrame: {
+    backgroundColor: 'rgba(30, 30, 60, 0.95)',
+    borderRadius: 25,
+    borderWidth: 3,
+    borderColor: '#ff8800',
+    padding: 30,
+    alignItems: 'center',
+    width: '85%',
+    maxWidth: 350,
+  },
+  checkpointTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#ff8800',
+    marginBottom: 20,
+    textShadowColor: 'rgba(255, 136, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 15,
+  },
+  checkpointMessage: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 20,
+  },
+  checkpointStarsInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 25,
+    paddingVertical: 12,
+    borderRadius: 15,
+  },
+  checkpointCurrentStars: {
+    fontSize: 24,
+    color: '#ffd700',
+    fontWeight: 'bold',
+  },
+  checkpointSlash: {
+    fontSize: 24,
+    color: '#888',
+    marginHorizontal: 10,
+  },
+  checkpointRequiredStars: {
+    fontSize: 24,
+    color: '#ff8800',
+    fontWeight: 'bold',
+  },
+  checkpointHint: {
+    fontSize: 14,
+    color: '#aaa',
+    textAlign: 'center',
+    marginBottom: 25,
+    fontStyle: 'italic',
+  },
+  checkpointButton: {
+    backgroundColor: 'rgba(255, 136, 0, 0.3)',
+    borderWidth: 2,
+    borderColor: '#ff8800',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+  },
+  checkpointButtonText: {
+    fontSize: 18,
+    color: '#ff8800',
+    fontWeight: 'bold',
   },
 });

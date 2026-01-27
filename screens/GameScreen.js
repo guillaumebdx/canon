@@ -70,7 +70,7 @@ const MILESTONE_MESSAGES = [
   'BRAVO !',
   'CONTINUE !',
   'EN FEU !',
-  'UNSTOPPABLE !',
+  'PARFAIT !',
 ];
 
 const getRandomMessage = () => {
@@ -316,6 +316,17 @@ const ResultScreen = ({ won, onRetry, onNextLevel, onBackToMenu, starCount, chec
           {won && <StarDisplay count={starCount} animated={true} />}
           
           <View style={styles.resultButtonsRow}>
+            <Pressable
+              onPress={onRetry}
+              style={({ pressed }) => [
+                styles.resultButton,
+                styles.replayButton,
+                pressed && styles.buttonPressed,
+              ]}
+              >
+              <Text style={styles.resultButtonText}>REJOUER</Text>
+            </Pressable>
+
             {won && (
               <Pressable
                 onPress={onNextLevel}
@@ -328,17 +339,6 @@ const ResultScreen = ({ won, onRetry, onNextLevel, onBackToMenu, starCount, chec
                 <Text style={styles.resultButtonText}>SUIVANT</Text>
               </Pressable>
             )}
-            
-            <Pressable
-              onPress={onRetry}
-              style={({ pressed }) => [
-                styles.resultButton,
-                styles.replayButton,
-                pressed && styles.buttonPressed,
-              ]}
-              >
-              <Text style={styles.resultButtonText}>REJOUER</Text>
-            </Pressable>
           </View>
           
           <Pressable
@@ -529,7 +529,7 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
         onLevelComplete(level, 3);
       }
       if (getNextLevelCheckpointBlock) {
-        const blocked = getNextLevelCheckpointBlock(level);
+        const blocked = getNextLevelCheckpointBlock(level, 3);
         if (blocked) setCheckpointBlocked(blocked);
       }
       return;
@@ -544,7 +544,7 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
           onLevelComplete(level, finalStars);
         }
         if (getNextLevelCheckpointBlock) {
-          const blocked = getNextLevelCheckpointBlock(level);
+          const blocked = getNextLevelCheckpointBlock(level, finalStars);
           if (blocked) setCheckpointBlocked(blocked);
         }
       } else {
@@ -591,7 +591,7 @@ export const GameScreen = ({ level, onBackToMenu, onNextLevel, soundEnabled, onL
         onLevelComplete(level, finalStars);
       }
       if (getNextLevelCheckpointBlock) {
-        const blocked = getNextLevelCheckpointBlock(level);
+        const blocked = getNextLevelCheckpointBlock(level, finalStars);
         if (blocked) setCheckpointBlocked(blocked);
       }
     } else {

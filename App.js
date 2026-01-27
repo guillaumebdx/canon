@@ -5,7 +5,7 @@ import { getLevelCount } from './utils/levelLoader';
 import { initDatabase, getAllProgress, saveLevelProgress, resetAllProgress, debugSetLevel } from './services/database';
 
 const CHECKPOINT_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const STARS_PERCENTAGE_REQUIRED = 0.78;
+const STARS_PERCENTAGE_REQUIRED = 0.67;
 
 const getRequiredStarsForCheckpoint = (checkpointLevel) => {
   const levelsBeforeCheckpoint = checkpointLevel - 1;
@@ -103,18 +103,21 @@ export default function App() {
     }));
   }, [totalStars]);
 
-  const getNextLevelCheckpointBlock = useCallback((currentLevel) => {
+  const getNextLevelCheckpointBlock = useCallback((currentLevel, starsJustEarned = 0) => {
     const nextLevel = currentLevel + 1;
     if (!CHECKPOINT_LEVELS.includes(nextLevel)) return null;
     const requiredStars = getRequiredStarsForCheckpoint(nextLevel);
-    if (totalStars >= requiredStars) return null;
+    const currentBest = levelStars[currentLevel] || 0;
+    const starsGained = Math.max(0, starsJustEarned - currentBest);
+    const updatedTotalStars = totalStars + starsGained;
+    if (updatedTotalStars >= requiredStars) return null;
     return {
       nextLevel,
       requiredStars,
-      currentStars: totalStars,
-      missingStars: requiredStars - totalStars,
+      currentStars: updatedTotalStars,
+      missingStars: requiredStars - updatedTotalStars,
     };
-  }, [totalStars]);
+  }, [totalStars, levelStars]);
 
   if (!isDbReady) {
     return null;

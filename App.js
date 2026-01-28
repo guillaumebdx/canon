@@ -4,7 +4,7 @@ import { GameScreen } from './screens/GameScreen';
 import { getLevelCount } from './utils/levelLoader';
 import { initDatabase, getAllProgress, saveLevelProgress, resetAllProgress, debugSetLevel } from './services/database';
 
-const CHECKPOINT_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const CHECKPOINT_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
 const STARS_PERCENTAGE_REQUIRED = 0.67;
 
 const getRequiredStarsForCheckpoint = (checkpointLevel) => {

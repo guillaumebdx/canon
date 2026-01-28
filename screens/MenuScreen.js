@@ -4,7 +4,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
-const TOTAL_LEVELS = 100;
+const TOTAL_LEVELS = 120;
 const LEVEL_SPACING = 120;
 const NODE_SIZE = 70;
 const CONTENT_HEIGHT = TOTAL_LEVELS * LEVEL_SPACING + 200;

@@ -1565,7 +1565,7 @@
     }
   },
   "44": {
-    "stock": 78,
+    "stock": 88,
     "background": {
       "gradientColors": ["#0a0a15", "#151525", "#202035", "#0a0a15"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -1675,7 +1675,7 @@
     }
   },
   "47": {
-    "stock": 110,
+    "stock": 120,
     "background": {
       "gradientColors": ["#101005", "#202010", "#30301a", "#101005"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -1828,7 +1828,7 @@
     }
   },
   "51": {
-    "stock": 160,
+    "stock": 170,
     "background": {
       "gradientColors": ["#0a0510", "#150a20", "#200f30", "#0a0510"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -1862,7 +1862,7 @@
     }
   },
   "52": {
-    "stock": 125,
+    "stock": 135,
     "background": {
       "gradientColors": ["#100505", "#201010", "#301515", "#100505"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2076,7 +2076,7 @@
     }
   },
   "58": {
-    "stock": 105,
+    "stock": 125,
     "background": {
       "gradientColors": ["#051515", "#0a2a2a", "#0f3f3f", "#051515"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2133,7 +2133,7 @@
     }
   },
   "60": {
-    "stock": 100,
+    "stock": 120,
     "background": {
       "gradientColors": ["#080515", "#100a2a", "#180f3f", "#080515"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2216,7 +2216,7 @@
     }
   },
   "63": {
-    "stock": 90,
+    "stock": 110,
     "background": {
       "gradientColors": ["#0f050a", "#1e0a14", "#2d0f1e", "#0f050a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2267,7 +2267,7 @@
     }
   },
   "65": {
-    "stock": 105,
+    "stock": 125,
     "background": {
       "gradientColors": ["#0a0510", "#140a20", "#1e0f30", "#0a0510"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2294,7 +2294,7 @@
     }
   },
   "66": {
-    "stock": 88,
+    "stock": 118,
     "background": {
       "gradientColors": ["#100505", "#201010", "#301515", "#100505"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2351,7 +2351,7 @@
     }
   },
   "68": {
-    "stock": 95,
+    "stock": 125,
     "background": {
       "gradientColors": ["#0a100a", "#142014", "#1e301e", "#0a100a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2379,7 +2379,7 @@
     }
   },
   "69": {
-    "stock": 110,
+    "stock": 120,
     "background": {
       "gradientColors": ["#0f0a05", "#1e1410", "#2d1e1a", "#0f0a05"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2711,7 +2711,7 @@
     }
   },
   "81": {
-    "stock": 200,
+    "stock": 150,
     "background": {
       "gradientColors": ["#0a0510", "#140a20", "#1e0f30", "#0a0510"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2742,7 +2742,7 @@
     }
   },
   "82": {
-    "stock": 180,
+    "stock": 130,
     "background": {
       "gradientColors": ["#0a100a", "#142014", "#1e301e", "#0a100a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2771,7 +2771,7 @@
     }
   },
   "83": {
-    "stock": 220,
+    "stock": 110,
     "background": {
       "gradientColors": ["#100505", "#200a0a", "#300f0f", "#100505"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2802,7 +2802,7 @@
     }
   },
   "84": {
-    "stock": 190,
+    "stock": 120,
     "background": {
       "gradientColors": ["#050a10", "#0a1420", "#0f1e30", "#050a10"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2830,7 +2830,7 @@
     }
   },
   "85": {
-    "stock": 210,
+    "stock": 150,
     "background": {
       "gradientColors": ["#0a0a05", "#14140a", "#1e1e0f", "#0a0a05"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2861,7 +2861,7 @@
     }
   },
   "86": {
-    "stock": 240,
+    "stock": 150,
     "background": {
       "gradientColors": ["#0a050a", "#140a14", "#1e0f1e", "#0a050a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2892,7 +2892,7 @@
     }
   },
   "87": {
-    "stock": 200,
+    "stock": 160,
     "background": {
       "gradientColors": ["#050510", "#0a0a20", "#0f0f30", "#050510"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2921,7 +2921,7 @@
     }
   },
   "88": {
-    "stock": 230,
+    "stock": 175,
     "background": {
       "gradientColors": ["#100a05", "#201410", "#301e1a", "#100a05"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2949,7 +2949,7 @@
     }
   },
   "89": {
-    "stock": 210,
+    "stock": 100,
     "background": {
       "gradientColors": ["#050a0a", "#0a1414", "#0f1e1e", "#050a0a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -2978,7 +2978,7 @@
     }
   },
   "90": {
-    "stock": 250,
+    "stock": 150,
     "background": {
       "gradientColors": ["#0a0a0a", "#141414", "#1e1e1e", "#0a0a0a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -3009,7 +3009,7 @@
     }
   },
   "91": {
-    "stock": 220,
+    "stock": 175,
     "background": {
       "gradientColors": ["#0f050a", "#1e0a14", "#2d0f1e", "#0f050a"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -3037,7 +3037,7 @@
     }
   },
   "92": {
-    "stock": 260,
+    "stock": 230,
     "background": {
       "gradientColors": ["#050a05", "#0a140a", "#0f1e0f", "#050a05"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -3065,7 +3065,7 @@
     }
   },
   "93": {
-    "stock": 240,
+    "stock": 110,
     "background": {
       "gradientColors": ["#100505", "#200a0a", "#300f0f", "#100505"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -3096,7 +3096,7 @@
     }
   },
   "94": {
-    "stock": 270,
+    "stock": 150,
     "background": {
       "gradientColors": ["#05050f", "#0a0a1e", "#0f0f2d", "#05050f"],
       "gradientLocations": [0, 0.3, 0.6, 1],
@@ -3128,7 +3128,7 @@
     }
   },
   "95": {
-    "stock": 230,
+    "stock": 130,
     "background": {
       "gradientColors": ["#0f0a05", "#1e1410", "#2d1e1a", "#0f0a05"],
       "gradientLocations": [0, 0.3, 0.6, 1],
